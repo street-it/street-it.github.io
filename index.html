@@ -417,7 +417,7 @@
     <span class="zoom" id="ivZoom">100%</span>
     <button id="ivIn" aria-label="Zoom in" title="Zoom in (+)"><svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg></button>
     <button id="ivFit" aria-label="Fit to screen" title="Fit (0)"><svg viewBox="0 0 24 24"><path d="M4 4h6v2H6v4H4zM14 4h6v6h-2V6h-4zM4 14h2v4h4v2H4zM18 14h2v6h-6v-2h4z"/></svg></button>
-    <span class="small hint">Scroll or double-click to zoom, drag to move</span>
+    <span class="small hint">Pinch, scroll wheel or double-click to zoom. Drag or swipe to move</span>
   </div>
 </div>
 
@@ -496,8 +496,15 @@ function onScroll() {
     track.style.transform = `translateX(${(1 - k) * 80}px)`;
   }
 }
-addEventListener("scroll", onScroll, { passive: true });
-addEventListener("resize", onScroll);
+/* touchpads fire many scroll events per frame: do the work at most once per frame */
+let scrollQueued = false;
+const queueScroll = () => {
+  if (scrollQueued) return;
+  scrollQueued = true;
+  requestAnimationFrame(() => { scrollQueued = false; onScroll(); });
+};
+addEventListener("scroll", queueScroll, { passive: true });
+addEventListener("resize", queueScroll);
 onScroll();
 
 /* strip: drag with the mouse, arrow buttons, and click a still to open it */
@@ -540,11 +547,20 @@ $(".stage").addEventListener("click", () => {
   const end = hero.offsetTop + hero.offsetHeight - innerHeight;
   scrollTo({ top: scrollY < end - 4 ? end : hero.offsetTop + hero.offsetHeight, behavior: reduce ? "auto" : "smooth" });
 });
+/* the reel only plays, and its timecode only updates, while the hero is on screen */
+let heroOn = true;
+new IntersectionObserver(([e]) => {
+  heroOn = e.isIntersecting;
+  if (reduce || document.body.classList.contains("lb-open")) return;
+  heroOn ? reel.play().catch(() => {}) : reel.pause();
+}).observe(hero);
 (function tick() {
-  const t = reel.currentTime || 0;
-  const f = Math.floor((t % 1) * 30), s = Math.floor(t);
-  tc.textContent = `00:00:${String(s).padStart(2, "0")}:${String(f).padStart(2, "0")}`;
-  scrub.style.transform = `scaleX(${reel.duration ? t / reel.duration : 0})`;
+  if (heroOn) {
+    const t = reel.currentTime || 0;
+    const f = Math.floor((t % 1) * 30), s = Math.floor(t);
+    tc.textContent = `00:00:${String(s).padStart(2, "0")}:${String(f).padStart(2, "0")}`;
+    scrub.style.transform = `scaleX(${reel.duration ? t / reel.duration : 0})`;
+  }
   requestAnimationFrame(tick);
 })();
 if (reduce) reel.pause();
@@ -630,7 +646,7 @@ function closeLb() {
   lbVid.pause(); lbVid.removeAttribute("src"); lbVid.load();
   current = null;
   document.body.style.overflow = "";
-  if (!reduce) reel.play().catch(() => {});
+  if (!reduce && heroOn) reel.play().catch(() => {});
   lastFocus && lastFocus.focus();
 }
 document.addEventListener("click", e => {
@@ -750,8 +766,17 @@ $("#ivOut").addEventListener("click", () => zoomAt(z.s / 1.5, ...centre()));
 $("#ivFit").addEventListener("click", () => { z.s = 1; applyZoom(); });
 ivStage.addEventListener("wheel", e => {
   e.preventDefault();
-  const r = ivStage.getBoundingClientRect();
-  zoomAt(z.s * Math.exp(-e.deltaY * .0015), e.clientX - r.left, e.clientY - r.top);
+  const r = ivStage.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+  /* touchpad pinch arrives as a ctrl+wheel with small steps */
+  if (e.ctrlKey) return zoomAt(z.s * Math.exp(-e.deltaY * .012), px, py);
+  /* touchpad two-finger swipes: small, fractional or sideways steps. They move the picture */
+  const touchpad = e.deltaMode === 0 && (e.deltaX !== 0 || !Number.isInteger(e.deltaY) || Math.abs(e.deltaY) < 40);
+  if (touchpad) {
+    if (z.s > 1) { z.x -= e.deltaX; z.y -= e.deltaY; applyZoom(); }
+    return;
+  }
+  /* a mouse wheel zooms */
+  zoomAt(z.s * Math.exp(-e.deltaY * .0015), px, py);
 }, { passive: false });
 ivStage.addEventListener("dblclick", e => {
   const r = ivStage.getBoundingClientRect();
