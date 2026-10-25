@@ -43,25 +43,29 @@
   :focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
   .small { font-size: var(--t-small); color: var(--dim); }
 
-  /* crosshair cursor, a nod to where it started */
-  @media (hover: hover) and (pointer: fine) {
-    /* only the crosshair shows; the normal cursor comes back inside the players */
-    body:not(.lb-open), body:not(.lb-open) * { cursor: none; }
-    .xhair {
-      position: fixed; left: 0; top: 0; width: 22px; height: 22px; z-index: 1000;
-      pointer-events: none; mix-blend-mode: difference; translate: -50% -50%;
-    }
-    .xhair i { position: absolute; background: #fff; transition: transform 200ms var(--ease-out); }
-    .xhair i:nth-child(1) { left: 10px; top: 0; width: 2px; height: 7px; }
-    .xhair i:nth-child(2) { left: 10px; bottom: 0; width: 2px; height: 7px; }
-    .xhair i:nth-child(3) { top: 10px; left: 0; height: 2px; width: 7px; }
-    .xhair i:nth-child(4) { top: 10px; right: 0; height: 2px; width: 7px; }
-    .xhair.on i:nth-child(1) { transform: translateY(-5px); }
-    .xhair.on i:nth-child(2) { transform: translateY(5px); }
-    .xhair.on i:nth-child(3) { transform: translateX(-5px); }
-    .xhair.on i:nth-child(4) { transform: translateX(5px); }
+  /* crosshair cursor, a nod to where it started. It is a real cursor image, drawn by the
+     system with no delay (a script-drawn cursor always trails the mouse by a frame or two).
+     White arms with a dark edge so it shows on any frame; the arms open over anything clickable.
+     The 2x images keep it sharp on Retina screens. */
+  :root {
+    --xh-1x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M12 2v6M12 16v6M2 12h6M16 12h6' stroke='%23000' stroke-width='4' stroke-linecap='square' stroke-opacity='.55'/%3E%3Cpath d='M12 2v6M12 16v6M2 12h6M16 12h6' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+    --xh-2x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath d='M12 2v6M12 16v6M2 12h6M16 12h6' stroke='%23000' stroke-width='4' stroke-linecap='square' stroke-opacity='.55'/%3E%3Cpath d='M12 2v6M12 16v6M2 12h6M16 12h6' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+    --xo-1x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M12 1v4M12 19v4M1 12h4M19 12h4' stroke='%23000' stroke-width='4' stroke-linecap='square' stroke-opacity='.55'/%3E%3Cpath d='M12 1v4M12 19v4M1 12h4M19 12h4' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+    --xo-2x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath d='M12 1v4M12 19v4M1 12h4M19 12h4' stroke='%23000' stroke-width='4' stroke-linecap='square' stroke-opacity='.55'/%3E%3Cpath d='M12 1v4M12 19v4M1 12h4M19 12h4' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
   }
-  @media not ((hover: hover) and (pointer: fine)) { .xhair { display: none; } }
+  @media (hover: hover) and (pointer: fine) {
+    /* the normal cursor comes back inside the players */
+    body:not(.lb-open), body:not(.lb-open) * {
+      cursor: var(--xh-1x) 12 12, crosshair;
+      cursor: image-set(var(--xh-1x) 1x, var(--xh-2x) 2x) 12 12, crosshair;
+      cursor: -webkit-image-set(var(--xh-1x) 1x, var(--xh-2x) 2x) 12 12, crosshair;
+    }
+    body:not(.lb-open) :is(a, button, .frame, .stage), body:not(.lb-open) :is(a, button, .frame, .stage) * {
+      cursor: var(--xo-1x) 12 12, pointer;
+      cursor: image-set(var(--xo-1x) 1x, var(--xo-2x) 2x) 12 12, pointer;
+      cursor: -webkit-image-set(var(--xo-1x) 1x, var(--xo-2x) 2x) 12 12, pointer;
+    }
+  }
 
   /* top bar: clear over the reel, solid black after it */
   .bar {
@@ -270,7 +274,6 @@
   /* a normal cursor inside the player, so the controls are obvious */
   body.lb-open, body.lb-open a, body.lb-open video { cursor: auto; }
   body.lb-open button, body.lb-open input { cursor: pointer; }
-  body.lb-open .xhair { display: none; }
   .lb header { transition: transform 450ms var(--ease-in-out), opacity 300ms ease; }
   /* fullscreen: the title slides up and out, the video takes the whole screen */
   .lb:fullscreen { grid-template-rows: minmax(0, 1fr) auto; }
@@ -313,7 +316,6 @@
 </style>
 </head>
 <body>
-<div class="xhair" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 
 <header class="bar" id="bar">
   <a href="#top" class="logo">sTreeT</a>
@@ -591,26 +593,24 @@ const cio = new IntersectionObserver(es => es.forEach(e => {
 }), { threshold: .6 });
 document.querySelectorAll("[data-count]").forEach(el => cio.observe(el));
 
-/* crosshair + hover peek on the timeline */
-const xh = $(".xhair"), peek = $("#peek"), pv = peek.querySelector("video");
-let mx = 0, my = 0, px = 0, py = 0;
-addEventListener("pointermove", e => {
-  mx = e.clientX; my = e.clientY;
-  xh.style.transform = `translate(${mx}px, ${my}px)`;
-  xh.classList.toggle("on", !!e.target.closest?.("a, button, .frame"));
-});
-(function follow() {
-  px += (mx - px) * .14; py += (my - py) * .14;
+/* hover peek on the timeline: follows the cursor closely, and only runs while it is shown */
+const peek = $("#peek"), pv = peek.querySelector("video");
+let mx = 0, my = 0, px = 0, py = 0, peekLoop = 0;
+addEventListener("pointermove", e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+function follow() {
+  px += (mx - px) * .4; py += (my - py) * .4;
   const flip = px > innerWidth - 400;
   peek.style.transform = `translate(${flip ? px - 388 : px}px, ${py}px)`;
-  requestAnimationFrame(follow);
-})();
+  peekLoop = peek.classList.contains("on") ? requestAnimationFrame(follow) : 0;
+}
 document.querySelectorAll(".rows a").forEach(a => {
   a.addEventListener("mouseenter", () => {
     pv.poster = `media/${a.dataset.id}.jpg`;
     pv.src = `media/${a.dataset.id}-loop.mp4`;
     pv.play().catch(() => {});
+    if (!peekLoop) { px = mx; py = my; }
     peek.classList.add("on");
+    if (!peekLoop) peekLoop = requestAnimationFrame(follow);
   });
   a.addEventListener("mouseleave", () => { peek.classList.remove("on"); pv.pause(); });
 });
