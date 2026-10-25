@@ -559,11 +559,10 @@ cSeek.addEventListener("change", () => { seeking = false; });
 
 addEventListener("keydown", e => {
   if (!lb.classList.contains("open")) return;
-  const onRange = e.target.matches("input[type=range]");
   const k = e.key.toLowerCase();
   if (k === "escape") { if (!document.fullscreenElement) closeLb(); return; }
   if (k === " " || k === "k") { if (e.target.tagName === "BUTTON" && k === " ") return; e.preventDefault(); toggle(); }
-  else if (onRange) return;
+  else if (e.target.id === "cVol") return; /* the volume slider keeps its own arrow keys */
   else if (k === "arrowright") { e.preventDefault(); seekBy(5); }
   else if (k === "arrowleft") { e.preventDefault(); seekBy(-5); }
   else if (k === "arrowup") { e.preventDefault(); setVol(lbVid.volume + .1); }
