@@ -197,15 +197,16 @@
   footer { margin-top: 120px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 
   /* lightbox */
-  .lb { position: fixed; inset: 0; z-index: 100; background: #000; display: grid; grid-template-rows: auto 1fr auto; visibility: hidden; opacity: 0; transition: opacity 160ms ease, visibility 0s 160ms; }
+  .lb { position: fixed; inset: 0; z-index: 100; background: #000; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; visibility: hidden; opacity: 0; transition: opacity 160ms ease, visibility 0s 160ms; }
   .lb.open { visibility: visible; opacity: 1; transition: opacity 260ms var(--ease-out); }
   .lb header { display: flex; justify-content: space-between; align-items: center; padding: 16px var(--gutter); gap: 16px; }
   .lb header strong { display: block; font-weight: 800; font-size: var(--t-title); letter-spacing: -.03em; line-height: 1.1; }
   .lb .close { padding: 10px 16px; background: #fff; color: #000; font-weight: 600; font-size: var(--t-small); transition: transform 160ms var(--ease-out); }
   .lb .close:active { transform: scale(.97); }
-  .lb .vid { padding: 0 var(--gutter) var(--gutter); min-height: 0; display: grid; place-items: center; transform: scale(.98); transition: transform 260ms var(--ease-out); }
+  /* the video is pinned to its box, so it letterboxes at any screen size instead of growing past it */
+  .lb .vid { position: relative; margin: 0 var(--gutter) 12px; min-height: 0; overflow: hidden; transform: scale(.98); transition: transform 260ms var(--ease-out); }
   .lb.open .vid { transform: none; }
-  .lb video { width: 100%; height: 100%; object-fit: contain; background: #000; cursor: pointer; }
+  .lb video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; cursor: pointer; }
   /* player controls: always visible, same on mouse and touch */
   .ctrl { display: flex; align-items: center; gap: 4px; padding: 0 var(--gutter) 20px; font-size: var(--t-small); }
   .ctrl button { width: 44px; height: 44px; display: grid; place-items: center; flex: none; transition: transform 160ms var(--ease-out), background-color 160ms ease; }
@@ -222,7 +223,11 @@
   body.lb-open, body.lb-open a, body.lb-open video { cursor: auto; }
   body.lb-open button, body.lb-open input { cursor: pointer; }
   body.lb-open .xhair { display: none; }
-  .lb:fullscreen .vid { padding: 0; }
+  .lb header { transition: transform 450ms var(--ease-in-out), opacity 300ms ease; }
+  /* fullscreen: the title slides up and out, the video takes the whole screen */
+  .lb:fullscreen { grid-template-rows: minmax(0, 1fr) auto; }
+  .lb:fullscreen header { position: absolute; top: 0; left: 0; right: 0; z-index: 1; transform: translateY(-100%); opacity: 0; pointer-events: none; }
+  .lb:fullscreen .vid { margin: 0; transform: none; }
   @media (max-width: 600px) {
     .ctrl { flex-wrap: wrap; gap: 0; padding-bottom: 12px; }
     .ctrl #cSeek { order: -1; flex-basis: 100%; }
@@ -539,6 +544,7 @@ function syncTime() {
 }
 lbVid.addEventListener("timeupdate", syncTime);
 lbVid.addEventListener("loadedmetadata", syncTime);
+lbVid.addEventListener("durationchange", syncTime);
 lbVid.addEventListener("play", () => cPlay.classList.remove("paused"));
 lbVid.addEventListener("pause", () => cPlay.classList.add("paused"));
 lbVid.addEventListener("volumechange", () => {
