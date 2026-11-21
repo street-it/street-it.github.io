@@ -729,6 +729,8 @@ document.addEventListener("click", e => {
   if (el && !lb.contains(el)) { e.preventDefault(); peek.classList.remove("on"); openLb(el.dataset.id); }
 });
 $("#lbClose").addEventListener("click", closeLb);
+/* leaving for YouTube: stop the video here so it doesn't play on in the background tab */
+$("#lbYt").addEventListener("click", () => lbVid.pause());
 
 /* player controls */
 const cPlay = $("#cPlay"), cMute = $("#cMute"), cSeek = $("#cSeek"), cVol = $("#cVol"), cTime = $("#cTime");
@@ -921,7 +923,7 @@ function openGb(id) {
   $("#gbTitle").textContent = v.t;
   $("#gbMeta").textContent = ["Blue Corner", v.sub, "color grade"].filter(Boolean).join(" · ");
   $("#gbYt").href = `https://www.youtube.com/watch?v=${id}`;
-  gbFrame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+  gbFrame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1&enablejsapi=1`;
   gb.classList.add("open");
   $("#gbClose").focus();
 }
@@ -933,6 +935,10 @@ function closeGb() {
 }
 $("#ggrid").addEventListener("click", e => { const c = e.target.closest("[data-yt]"); if (c) openGb(c.dataset.yt); });
 $("#gbClose").addEventListener("click", closeGb);
+/* the embedded YouTube player is paused through its player API (enabled with enablejsapi=1) */
+$("#gbYt").addEventListener("click", () => {
+  gbFrame.contentWindow?.postMessage(JSON.stringify({ event: "command", func: "pauseVideo", args: [] }), "*");
+});
 addEventListener("keydown", e => { if (e.key === "Escape" && gb.classList.contains("open")) closeGb(); });
 
 /* local clock in the footer */
