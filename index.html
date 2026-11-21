@@ -77,6 +77,11 @@
   .bar.solid { background: #000; }
   .bar .logo { font-weight: 900; font-size: var(--t-body); letter-spacing: -.02em; }
   .bar nav { display: flex; gap: 12px; margin-right: -10px; }
+  /* language switch: the current language is white and underlined, the others dimmed */
+  .lang { display: flex; margin-left: 10px; }
+  .lang button { padding: 12px 6px; margin: -12px 0; font-size: 13px; font-weight: 700; letter-spacing: .02em; color: var(--dim); transition: color 160ms ease; }
+  .lang button:hover { color: #fff; }
+  .lang button[aria-pressed="true"] { color: #fff; text-decoration: underline 2px; text-underline-offset: 5px; }
   .bar nav a { padding: 12px 10px; margin: -12px 0; }
   .bar nav a { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 5px; transition: text-decoration-color 200ms ease; }
   .bar nav a:hover { text-decoration-color: #fff; }
@@ -129,7 +134,7 @@
   .scrub b { position: absolute; inset: 0; background: #fff; transform-origin: left; transform: scaleX(0); }
 
   section { position: relative; }
-  h2 { font-weight: 900; letter-spacing: -.055em; line-height: .9; font-size: var(--t-heading); }
+  h2 { font-weight: 900; letter-spacing: -.055em; line-height: .9; font-size: var(--t-heading); hyphens: auto; overflow-wrap: anywhere; }
   .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; margin-bottom: 72px; }
   .head .lead { max-width: 30ch; padding-bottom: 6px; }
 
@@ -377,6 +382,17 @@
     .hud { flex-wrap: wrap; bottom: 24px; }
     .hud .hint { display: none; }
   }
+  @media (max-width: 480px) {
+    /* phones: logo, Work, Contact and EN RS RU share one tight row */
+    .bar nav { gap: 2px; margin-right: -4px; }
+    .bar nav > a, .dd-btn { padding: 12px 6px; }
+    .lang { margin-left: 2px; }
+    .lang button { padding: 12px 4px; font-size: 12px; }
+  }
+  @media (max-width: 360px) {
+    /* the narrowest phones: Contact is the last section, and the footer links stay */
+    .bar nav > a[href="#contact"] { display: none; }
+  }
   @media (hover: none) { .peek { display: none; } }
   @media (prefers-reduced-motion: reduce) {
     .breakout { opacity: 1; top: auto; bottom: 110px; translate: none; font-size: var(--t-title); }
@@ -389,27 +405,30 @@
   <a href="#top" class="logo">sTreeT</a>
   <nav>
     <div class="dd" id="dd">
-      <button class="dd-btn" id="ddBtn" aria-expanded="false" aria-controls="ddMenu">Work<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+      <button class="dd-btn" id="ddBtn" aria-expanded="false" aria-controls="ddMenu"><span data-i18n="nav.work">Work</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
       <div class="dd-menu" id="ddMenu">
-        <a href="#work">Edits</a>
-        <a href="#podcasts">Podcasts</a>
-        <a href="#grading">Grading</a>
+        <a href="#work" data-i18n="nav.edits">Edits</a>
+        <a href="#podcasts" data-i18n="nav.podcasts">Podcasts</a>
+        <a href="#grading" data-i18n="nav.grading">Grading</a>
       </div>
     </div>
-    <a href="#contact">Contact</a>
+    <a href="#contact" data-i18n="nav.contact">Contact</a>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-lang="en" aria-pressed="true" lang="en">EN</button><button data-lang="rs" aria-pressed="false" lang="sr-Latn">RS</button><button data-lang="ru" aria-pressed="false" lang="ru">RU</button>
+    </div>
   </nav>
 </header>
 
 <main id="top">
-  <section class="hero" aria-label="Showreel">
+  <section class="hero" aria-label="Showreel" data-i18n-aria="hero.aria">
     <div class="stage">
       <video id="reel" src="media/reel.mp4" poster="media/reel.jpg" muted loop playsinline autoplay preload="auto"></video>
       <div class="mask" id="mask"><h1>sTreeT</h1></div>
       <div class="scrim" id="scrim"></div>
-      <p class="breakout" id="breakout">Ten years<br>on the timeline.</p>
+      <p class="breakout" id="breakout" data-i18n-html="hero.breakout">Ten years<br>on the timeline.</p>
       <div class="hud">
-        <p class="lead">Video editor. Gaming edits since 2016, from Counter-Strike to Trackmania.</p>
-        <span class="hint" id="hint">Click or scroll</span>
+        <p class="lead" data-i18n="hero.lead">Video editor. Gaming edits since 2016, from Counter-Strike to Trackmania.</p>
+        <span class="hint" id="hint" data-i18n="hero.hint">Click or scroll</span>
         <span class="tc" id="tc" aria-hidden="true">00:00:00:00</span>
       </div>
       <div class="scrub"><b id="scrub"></b></div>
@@ -417,59 +436,59 @@
   </section>
 
   <section class="about" aria-labelledby="about-h">
-    <h2 id="about-h" class="rise">Ten years<br>of cutting</h2>
-    <p class="statement rise" style="--d:80ms">Started with Counter-Strike frag edits <em><video src="media/6gnNiZoxTvw-loop.mp4" poster="media/6gnNiZoxTvw.jpg" muted loop playsinline autoplay></video></em>. Now it’s Trackmania <em><video src="media/SV4qIEHNvyY-loop.mp4" poster="media/SV4qIEHNvyY.jpg" muted loop playsinline autoplay></video></em> events, trailers and client work.</p>
+    <h2 id="about-h" class="rise" data-i18n-html="about.h">Ten years<br>of cutting</h2>
+    <p class="statement rise" style="--d:80ms"><span data-i18n="about.s1">Started with Counter-Strike frag edits</span> <em><video src="media/6gnNiZoxTvw-loop.mp4" poster="media/6gnNiZoxTvw.jpg" muted loop playsinline autoplay></video></em><span data-i18n="about.s2">. Now it’s Trackmania</span> <em><video src="media/SV4qIEHNvyY-loop.mp4" poster="media/SV4qIEHNvyY.jpg" muted loop playsinline autoplay></video></em> <span data-i18n="about.s3">events, trailers and client work.</span></p>
     <div class="facts">
-      <div class="small rise" style="--d:120ms"><strong data-count="10">10</strong>Years cutting</div>
-      <div class="small rise" style="--d:180ms"><strong data-count="15">15</strong>Published edits</div>
-      <div class="small rise" style="--d:240ms"><strong data-count="23">23</strong>Minutes of footage</div>
-      <div class="small rise" style="--d:300ms"><strong>’17</strong>First upload</div>
+      <div class="small rise" style="--d:120ms"><strong data-count="10">10</strong><span data-i18n="fact.years">Years cutting</span></div>
+      <div class="small rise" style="--d:180ms"><strong data-count="15">15</strong><span data-i18n="fact.edits">Published edits</span></div>
+      <div class="small rise" style="--d:240ms"><strong data-count="23">23</strong><span data-i18n="fact.minutes">Minutes of footage</span></div>
+      <div class="small rise" style="--d:300ms"><strong>’17</strong><span data-i18n="fact.first">First upload</span></div>
     </div>
   </section>
 
   <div class="strip-wrap">
-    <div class="strip" id="stripScroll" tabindex="0" aria-label="Stills from every edit. Scroll sideways, click one to view it large."><div class="track" id="strip"></div></div>
-    <button class="strip-nav prev" id="stripPrev" aria-label="Scroll stills left" disabled><svg viewBox="0 0 24 24"><path d="M15.5 4 17 5.5 10.5 12l6.5 6.5-1.5 1.5-8-8z"/></svg></button>
-    <button class="strip-nav next" id="stripNext" aria-label="Scroll stills right"><svg viewBox="0 0 24 24"><path d="M8.5 4 7 5.5l6.5 6.5L7 18.5 8.5 20l8-8z"/></svg></button>
+    <div class="strip" id="stripScroll" tabindex="0" aria-label="Stills from every edit. Scroll sideways, click one to view it large." data-i18n-aria="strip.aria"><div class="track" id="strip"></div></div>
+    <button class="strip-nav prev" id="stripPrev" aria-label="Scroll stills left" data-i18n-aria="strip.left" disabled><svg viewBox="0 0 24 24"><path d="M15.5 4 17 5.5 10.5 12l6.5 6.5-1.5 1.5-8-8z"/></svg></button>
+    <button class="strip-nav next" id="stripNext" aria-label="Scroll stills right" data-i18n-aria="strip.right"><svg viewBox="0 0 24 24"><path d="M8.5 4 7 5.5l6.5 6.5L7 18.5 8.5 20l8-8z"/></svg></button>
   </div>
 
   <section class="work" id="work" aria-labelledby="work-h">
     <div class="head">
-      <h2 id="work-h" class="rise">Selected cuts</h2>
-      <p class="lead rise" style="--d:80ms">Six edits from both eras. Click any of them to watch it with sound.</p>
+      <h2 id="work-h" class="rise" data-i18n="work.h">Selected cuts</h2>
+      <p class="lead rise" style="--d:80ms" data-i18n="work.lead">Six edits from both eras. Click any of them to watch it with sound.</p>
     </div>
     <div class="grid" id="grid"></div>
   </section>
 
   <section class="index" id="index" aria-labelledby="index-h">
     <div class="head">
-      <h2 id="index-h" class="rise">Timeline</h2>
-      <p class="lead rise" style="--d:80ms">All 15 edits, newest first. Hover for a preview, click to play.</p>
+      <h2 id="index-h" class="rise" data-i18n="index.h">Timeline</h2>
+      <p class="lead rise" style="--d:80ms" data-i18n="index.lead">All 15 edits, newest first. Hover for a preview, click to play.</p>
     </div>
     <div id="years"></div>
   </section>
 
   <section class="pods" id="podcasts" aria-labelledby="pods-h">
     <div class="head">
-      <h2 id="pods-h" class="rise">Podcasts</h2>
-      <p class="lead rise" style="--d:80ms">Long-form episodes I edited for<br><span style="white-space: nowrap">Kulturni Lešinari.</span></p>
+      <h2 id="pods-h" class="rise" data-i18n="pods.h">Podcasts</h2>
+      <p class="lead rise" style="--d:80ms" data-i18n-html="pods.lead">Long-form episodes I edited for<br><span style="white-space: nowrap">Kulturni Lešinari.</span></p>
     </div>
     <div class="plist" id="plist"></div>
-    <p class="after"><a class="small beat" href="https://www.youtube.com/channel/UCIsw7rBHhUTv96MN2VoZY8w" target="_blank" rel="noopener">Kulturni Lešinari on YouTube<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></p>
+    <p class="after"><a class="small beat" href="https://www.youtube.com/channel/UCIsw7rBHhUTv96MN2VoZY8w" target="_blank" rel="noopener"><span data-i18n="pods.yt">Kulturni Lešinari on YouTube</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></p>
   </section>
 
   <section class="grade" id="grading" aria-labelledby="grade-h">
     <div class="head">
-      <h2 id="grade-h" class="rise">Color grading</h2>
-      <p class="lead rise" style="--d:80ms">Music videos by Blue Corner. I did the color grading.</p>
+      <h2 id="grade-h" class="rise" data-i18n="grade.h">Color grading</h2>
+      <p class="lead rise" style="--d:80ms" data-i18n="grade.lead">Music videos by Blue Corner. I did the color grading.</p>
     </div>
     <div class="ggrid" id="ggrid"></div>
-    <p class="after"><a class="small beat" href="https://www.youtube.com/@bluecorner387/videos" target="_blank" rel="noopener">Blue Corner on YouTube<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></p>
+    <p class="after"><a class="small beat" href="https://www.youtube.com/@bluecorner387/videos" target="_blank" rel="noopener"><span data-i18n="grade.yt">Blue Corner on YouTube</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></p>
   </section>
 
   <section class="contact" id="contact" aria-labelledby="contact-h">
-    <h2 id="contact-h" class="rise"><a href="https://www.instagram.com/street_k0/" target="_blank" rel="noopener">Let’s cut something<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></h2>
-    <p class="lead rise" style="--d:80ms">Open for edits, trailers and event recaps. Send a message on Instagram.</p>
+    <h2 id="contact-h" class="rise"><a href="https://www.instagram.com/street_k0/" target="_blank" rel="noopener"><span data-i18n="contact.h">Let’s cut something</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></h2>
+    <p class="lead rise" style="--d:80ms" data-i18n="contact.lead">Open for edits, trailers and event recaps. Send a message on Instagram.</p>
     <div class="links">
       <a href="https://www.instagram.com/street_k0/" target="_blank" rel="noopener">Instagram<span class="small">@street_k0</span></a>
       <a href="https://www.youtube.com/@street438" target="_blank" rel="noopener">YouTube<span class="small">@street438</span></a>
@@ -483,24 +502,24 @@
 <div class="peek" id="peek"><video muted loop playsinline poster="media/reel.jpg"></video></div>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-labelledby="lbTitle">
-  <header><div><span class="small" id="lbMeta"></span><strong id="lbTitle"></strong><a class="small beat" id="lbBeat" target="_blank" rel="noopener" hidden></a></div><div class="actions"><a class="small beat" id="lbYt" target="_blank" rel="noopener">Watch on YouTube<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a><button class="close" id="lbClose">Close</button></div></header>
+  <header><div><span class="small" id="lbMeta"></span><strong id="lbTitle"></strong><a class="small beat" id="lbBeat" target="_blank" rel="noopener" hidden></a></div><div class="actions"><a class="small beat" id="lbYt" target="_blank" rel="noopener"><span data-i18n="watchYt">Watch on YouTube</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a><button class="close" id="lbClose" data-i18n="close">Close</button></div></header>
   <div class="vid"><video id="lbVid" playsinline poster="media/reel.jpg"></video></div>
   <div class="ctrl" id="ctrl">
-    <button id="cPrev" aria-label="Previous edit" title="Previous edit (P)"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
-    <button id="cPlay" aria-label="Play or pause" title="Play / pause (Space)"><svg class="ico-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg><svg class="ico-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg></button>
-    <button id="cNext" aria-label="Next edit" title="Next edit (N)"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+    <button id="cPrev" aria-label="Previous edit (P)" title="Previous edit (P)" data-i18n-aria="ctl.prev" data-i18n-title="ctl.prev"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+    <button id="cPlay" aria-label="Play / pause (Space)" title="Play / pause (Space)" data-i18n-aria="ctl.play" data-i18n-title="ctl.play"><svg class="ico-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg><svg class="ico-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg></button>
+    <button id="cNext" aria-label="Next edit (N)" title="Next edit (N)" data-i18n-aria="ctl.next" data-i18n-title="ctl.next"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
     <span class="time" id="cTime">0:00 / 0:00</span>
-    <input type="range" id="cSeek" min="0" max="1000" step="1" value="0" aria-label="Seek" title="Seek (← →)">
-    <button id="cMute" aria-label="Mute or unmute" title="Mute (M)"><svg class="ico-vol" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4zM16 8.5a5 5 0 0 1 0 7l-1.4-1.4a3 3 0 0 0 0-4.2zM18.5 6a8.5 8.5 0 0 1 0 12l-1.4-1.4a6.5 6.5 0 0 0 0-9.2z"/></svg><svg class="ico-muted" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4zM16 9.4l1.4-1.4 2.1 2.1 2.1-2.1L23 9.4 20.9 11.5 23 13.6l-1.4 1.4-2.1-2.1-2.1 2.1-1.4-1.4 2.1-2.1z"/></svg></button>
-    <input type="range" id="cVol" min="0" max="1" step="0.05" value="1" aria-label="Volume" title="Volume (↑ ↓)">
-    <button id="cFull" aria-label="Fullscreen" title="Fullscreen (F)"><svg viewBox="0 0 24 24"><path d="M4 4h6v2H6v4H4zM14 4h6v6h-2V6h-4zM4 14h2v4h4v2H4zM18 14h2v6h-6v-2h4z"/></svg></button>
+    <input type="range" id="cSeek" min="0" max="1000" step="1" value="0" aria-label="Seek (← →)" title="Seek (← →)" data-i18n-aria="ctl.seek" data-i18n-title="ctl.seek">
+    <button id="cMute" aria-label="Mute (M)" title="Mute (M)" data-i18n-aria="ctl.mute" data-i18n-title="ctl.mute"><svg class="ico-vol" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4zM16 8.5a5 5 0 0 1 0 7l-1.4-1.4a3 3 0 0 0 0-4.2zM18.5 6a8.5 8.5 0 0 1 0 12l-1.4-1.4a6.5 6.5 0 0 0 0-9.2z"/></svg><svg class="ico-muted" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4zM16 9.4l1.4-1.4 2.1 2.1 2.1-2.1L23 9.4 20.9 11.5 23 13.6l-1.4 1.4-2.1-2.1-2.1 2.1-1.4-1.4 2.1-2.1z"/></svg></button>
+    <input type="range" id="cVol" min="0" max="1" step="0.05" value="1" aria-label="Volume (↑ ↓)" title="Volume (↑ ↓)" data-i18n-aria="ctl.vol" data-i18n-title="ctl.vol">
+    <button id="cFull" aria-label="Fullscreen (F)" title="Fullscreen (F)" data-i18n-aria="ctl.full" data-i18n-title="ctl.full"><svg viewBox="0 0 24 24"><path d="M4 4h6v2H6v4H4zM14 4h6v6h-2V6h-4zM4 14h2v4h4v2H4zM18 14h2v6h-6v-2h4z"/></svg></button>
   </div>
 </div>
 
 <div class="lb gb" id="gb" role="dialog" aria-modal="true" aria-labelledby="gbTitle">
   <header>
     <div><span class="small" id="gbMeta"></span><strong id="gbTitle"></strong></div>
-    <div class="actions"><a class="small beat" id="gbYt" target="_blank" rel="noopener">Watch on YouTube<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a><button class="close" id="gbClose">Close</button></div>
+    <div class="actions"><a class="small beat" id="gbYt" target="_blank" rel="noopener"><span data-i18n="watchYt">Watch on YouTube</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a><button class="close" id="gbClose" data-i18n="close">Close</button></div>
   </header>
   <div class="vid"><iframe id="gbFrame" title="Music video" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
 </div>
@@ -508,18 +527,18 @@
 <div class="iv" id="iv" role="dialog" aria-modal="true" aria-labelledby="ivTitle">
   <header>
     <div><span class="small" id="ivMeta"></span><strong id="ivTitle"></strong></div>
-    <div class="actions"><button class="watch" id="ivWatch">Watch this edit</button><button class="close" id="ivClose">Close</button></div>
+    <div class="actions"><button class="watch" id="ivWatch" data-i18n="iv.watch">Watch this edit</button><button class="close" id="ivClose" data-i18n="close">Close</button></div>
   </header>
   <div class="iv-stage" id="ivStage"><img id="ivImg" alt=""></div>
   <div class="iv-bar">
-    <button id="ivPrev" aria-label="Previous still" title="Previous (←)"><svg viewBox="0 0 24 24"><path d="M15.5 4 17 5.5 10.5 12l6.5 6.5-1.5 1.5-8-8z"/></svg></button>
+    <button id="ivPrev" aria-label="Previous (←)" title="Previous (←)" data-i18n-aria="iv.prev" data-i18n-title="iv.prev"><svg viewBox="0 0 24 24"><path d="M15.5 4 17 5.5 10.5 12l6.5 6.5-1.5 1.5-8-8z"/></svg></button>
     <span class="count" id="ivCount"></span>
-    <button id="ivNext" aria-label="Next still" title="Next (→)"><svg viewBox="0 0 24 24"><path d="M8.5 4 7 5.5l6.5 6.5L7 18.5 8.5 20l8-8z"/></svg></button>
-    <button id="ivOut" aria-label="Zoom out" title="Zoom out (−)"><svg viewBox="0 0 24 24"><path d="M5 11h14v2H5z"/></svg></button>
+    <button id="ivNext" aria-label="Next (→)" title="Next (→)" data-i18n-aria="iv.next" data-i18n-title="iv.next"><svg viewBox="0 0 24 24"><path d="M8.5 4 7 5.5l6.5 6.5L7 18.5 8.5 20l8-8z"/></svg></button>
+    <button id="ivOut" aria-label="Zoom out (−)" title="Zoom out (−)" data-i18n-aria="iv.out" data-i18n-title="iv.out"><svg viewBox="0 0 24 24"><path d="M5 11h14v2H5z"/></svg></button>
     <span class="zoom" id="ivZoom">100%</span>
-    <button id="ivIn" aria-label="Zoom in" title="Zoom in (+)"><svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg></button>
-    <button id="ivFit" aria-label="Fit to screen" title="Fit (0)"><svg viewBox="0 0 24 24"><path d="M4 4h6v2H6v4H4zM14 4h6v6h-2V6h-4zM4 14h2v4h4v2H4zM18 14h2v6h-6v-2h4z"/></svg></button>
-    <span class="small hint">Pinch, scroll wheel or double-click to zoom. Drag or swipe to move</span>
+    <button id="ivIn" aria-label="Zoom in (+)" title="Zoom in (+)" data-i18n-aria="iv.in" data-i18n-title="iv.in"><svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg></button>
+    <button id="ivFit" aria-label="Fit (0)" title="Fit (0)" data-i18n-aria="iv.fit" data-i18n-title="iv.fit"><svg viewBox="0 0 24 24"><path d="M4 4h6v2H6v4H4zM14 4h6v6h-2V6h-4zM4 14h2v4h4v2H4zM18 14h2v6h-6v-2h4z"/></svg></button>
+    <span class="small hint" data-i18n="iv.hint">Pinch, scroll wheel or double-click to zoom. Drag or swipe to move</span>
   </div>
 </div>
 
@@ -547,24 +566,174 @@ const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const dur = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 const yr = v => v.d.slice(0, 4);
 const $ = s => document.querySelector(s);
+/* languages: EN, RS (Serbian, Latin script) and RU. Titles, games and names stay as they are.
+   The choice is remembered; ?lang=rs or ?lang=ru in a link opens the site in that language. */
+const I18N = {
+  en: {
+    "meta.title": "sTreeT — Video Editor",
+    "meta.desc": "sTreeT, video editor. Counter-Strike frag edits since 2016, now Trackmania events, trailers and client work.",
+    "nav.work": "Work", "nav.edits": "Edits", "nav.podcasts": "Podcasts", "nav.grading": "Grading", "nav.contact": "Contact",
+    "hero.aria": "Showreel",
+    "hero.breakout": "Ten years<br>on the timeline.",
+    "hero.lead": "Video editor. Gaming edits since 2016, from Counter-Strike to Trackmania.",
+    "hero.hint": "Click or scroll",
+    "about.h": "Ten years<br>of cutting",
+    "about.s1": "Started with Counter-Strike frag edits",
+    "about.s2": ". Now it’s Trackmania",
+    "about.s3": "events, trailers and client work.",
+    "fact.years": "Years cutting", "fact.edits": "Published edits", "fact.minutes": "Minutes of footage", "fact.first": "First upload",
+    "strip.aria": "Stills from every edit. Scroll sideways, click one to view it large.",
+    "strip.left": "Scroll stills left", "strip.right": "Scroll stills right",
+    "work.h": "Selected cuts",
+    "work.lead": "Six edits from both eras. Click any of them to watch it with sound.",
+    "index.h": "Timeline",
+    "index.lead": "All 15 edits, newest first. Hover for a preview, click to play.",
+    "pods.h": "Podcasts",
+    "pods.lead": "Long-form episodes I edited for<br><span style=\"white-space: nowrap\">Kulturni Lešinari.</span>",
+    "pods.yt": "Kulturni Lešinari on YouTube",
+    "grade.h": "Color grading",
+    "grade.lead": "Music videos by Blue Corner. I did the color grading.",
+    "grade.yt": "Blue Corner on YouTube",
+    "contact.h": "Let’s cut something",
+    "contact.lead": "Open for edits, trailers and event recaps. Send a message on Instagram.",
+    "clock": "Your time",
+    "watchYt": "Watch on YouTube", "close": "Close",
+    "ctl.prev": "Previous edit (P)", "ctl.play": "Play / pause (Space)", "ctl.next": "Next edit (N)",
+    "ctl.seek": "Seek (← →)", "ctl.mute": "Mute (M)", "ctl.vol": "Volume (↑ ↓)", "ctl.full": "Fullscreen (F)",
+    "iv.watch": "Watch this edit", "iv.prev": "Previous (←)", "iv.next": "Next (→)",
+    "iv.out": "Zoom out (−)", "iv.in": "Zoom in (+)", "iv.fit": "Fit (0)",
+    "iv.hint": "Pinch, scroll wheel or double-click to zoom. Drag or swipe to move",
+    "playSound": "Play with sound", "play": "Play", "colorGrade": "Color grade", "guest": "Guest", "g.other": "Other",
+    "aria.play": "Play {x}", "aria.playBy": "Play {x} by Blue Corner", "aria.playPod": "Play {x}, Kulturni Lešinari",
+    "aria.still": "View still from {x}", "alt.still": "Still from {x}", "alt.graded": "Graded frame from {x}", "alt.cover": "Cover of {x}",
+    "gsub.Y5YjZ35nXcs": "Aladdin cover",
+  },
+  rs: {
+    "meta.title": "sTreeT — Video montažer",
+    "meta.desc": "sTreeT, video montažer. Counter-Strike frag editi od 2016, sada Trackmania eventi, trejleri i rad za klijente.",
+    "nav.work": "Radovi", "nav.edits": "Montaže", "nav.podcasts": "Podkasti", "nav.grading": "Kolor grejding", "nav.contact": "Kontakt",
+    "hero.aria": "Showreel",
+    "hero.breakout": "Deset godina<br>na tajmlajnu.",
+    "hero.lead": "Video montažer. Gejming editi od 2016, od Counter-Strikea do Trackmanie.",
+    "hero.hint": "Klikni ili skroluj",
+    "about.h": "Deset godina<br>montaže",
+    "about.s1": "Počeo sam sa Counter-Strike frag editima",
+    "about.s2": ". Sada je to Trackmania",
+    "about.s3": "eventi, trejleri i rad za klijente.",
+    "fact.years": "Godina montaže", "fact.edits": "Objavljenih edita", "fact.minutes": "Minuta snimaka", "fact.first": "Prvi upload",
+    "strip.aria": "Kadrovi iz svakog edita. Skroluj u stranu, klikni na kadar da ga vidiš u većem.",
+    "strip.left": "Pomeri kadrove levo", "strip.right": "Pomeri kadrove desno",
+    "work.h": "Izdvojeni radovi",
+    "work.lead": "Šest edita iz oba perioda. Klikni na bilo koji da ga pogledaš sa zvukom.",
+    "index.h": "Tajmlajn",
+    "index.lead": "Svih 15 edita, od najnovijeg. Pređi mišem za pregled, klikni da pustiš.",
+    "pods.h": "Podkasti",
+    "pods.lead": "Duge epizode koje sam montirao za<br><span style=\"white-space: nowrap\">Kulturne Lešinare.</span>",
+    "pods.yt": "Kulturni Lešinari na YouTubeu",
+    "grade.h": "Kolor grejding",
+    "grade.lead": "Muzički spotovi grupe Blue Corner. Radio sam kolor grejding.",
+    "grade.yt": "Blue Corner na YouTubeu",
+    "contact.h": "Hajde da montiramo nešto",
+    "contact.lead": "Otvoren za edite, trejlere i rezimee eventova. Piši mi na Instagramu.",
+    "clock": "Tvoje vreme",
+    "watchYt": "Pogledaj na YouTubeu", "close": "Zatvori",
+    "ctl.prev": "Prethodni edit (P)", "ctl.play": "Pusti / pauza (Space)", "ctl.next": "Sledeći edit (N)",
+    "ctl.seek": "Premotaj (← →)", "ctl.mute": "Isključi zvuk (M)", "ctl.vol": "Jačina zvuka (↑ ↓)", "ctl.full": "Ceo ekran (F)",
+    "iv.watch": "Pogledaj ovaj edit", "iv.prev": "Prethodni (←)", "iv.next": "Sledeći (→)",
+    "iv.out": "Umanji (−)", "iv.in": "Uvećaj (+)", "iv.fit": "Uklopi (0)",
+    "iv.hint": "Zumiraj prstima, točićem miša ili duplim klikom. Prevuci da pomeriš",
+    "playSound": "Pusti sa zvukom", "play": "Pusti", "colorGrade": "Kolor grejding", "guest": "Gost", "g.other": "Ostalo",
+    "aria.play": "Pusti {x}", "aria.playBy": "Pusti {x}, Blue Corner", "aria.playPod": "Pusti {x}, Kulturni Lešinari",
+    "aria.still": "Pogledaj kadar iz {x}", "alt.still": "Kadar iz {x}", "alt.graded": "Kolorisan kadar iz {x}", "alt.cover": "Naslovna slika za {x}",
+    "sub.o_SIqWudN6E": "Preview v003, nedovršeno", "sub.w7-jNLiDebs": "Trejler", "sub.Kv1Nv6kRPt0": "Rad za klijenta",
+    "sub.2rCEqv0GifY": "Loš kvalitet, jaka namera", "sub.Vmn5HYMoLKA": "Trejler za mod",
+    "link.Vmn5HYMoLKA": "Rađeno za mod Camera Inertia", "link.TM4Jk-u-_ao": "Bit: drugela a.k.a. GejmerSaKlise",
+    "gsub.Y5YjZ35nXcs": "Obrada pesme iz Aladina",
+  },
+  ru: {
+    "meta.title": "sTreeT — Видеомонтажёр",
+    "meta.desc": "sTreeT, видеомонтажёр. Фраг-мувики по Counter-Strike с 2016 года, сейчас — турниры Trackmania, трейлеры и работа для клиентов.",
+    "nav.work": "Работы", "nav.edits": "Монтаж", "nav.podcasts": "Подкасты", "nav.grading": "Цветокоррекция", "nav.contact": "Контакты",
+    "hero.aria": "Шоурил",
+    "hero.breakout": "Десять лет<br>на таймлайне.",
+    "hero.lead": "Видеомонтажёр. Игровые эдиты с 2016 года, от Counter-Strike до Trackmania.",
+    "hero.hint": "Нажми или прокрути",
+    "about.h": "Десять лет<br>монтажа",
+    "about.s1": "Начинал с фраг-мувиков по Counter-Strike",
+    "about.s2": ". Сейчас это Trackmania",
+    "about.s3": "— турниры, трейлеры и работа для клиентов.",
+    "fact.years": "Лет в монтаже", "fact.edits": "Опубликованных эдитов", "fact.minutes": "Минут видео", "fact.first": "Первая загрузка",
+    "strip.aria": "Кадры из каждого эдита. Листай вбок, нажми на кадр, чтобы открыть его крупно.",
+    "strip.left": "Прокрутить кадры влево", "strip.right": "Прокрутить кадры вправо",
+    "work.h": "Избранное",
+    "work.lead": "Шесть эдитов из обеих эпох. Нажми на любой, чтобы посмотреть со звуком.",
+    "index.h": "Хронология",
+    "index.lead": "Все 15 эдитов, сначала новые. Наведи для превью, нажми, чтобы смотреть.",
+    "pods.h": "Подкасты",
+    "pods.lead": "Длинные выпуски, которые я монтировал для<br><span style=\"white-space: nowrap\">Kulturni Lešinari.</span>",
+    "pods.yt": "Kulturni Lešinari на YouTube",
+    "grade.h": "Цветокоррекция",
+    "grade.lead": "Клипы группы Blue Corner. Я делал цветокоррекцию.",
+    "grade.yt": "Blue Corner на YouTube",
+    "contact.h": "Давай что-нибудь смонтируем",
+    "contact.lead": "Открыт для эдитов, трейлеров и обзоров турниров. Пиши в Instagram.",
+    "clock": "Твоё время",
+    "watchYt": "Смотреть на YouTube", "close": "Закрыть",
+    "ctl.prev": "Предыдущий эдит (P)", "ctl.play": "Воспроизведение / пауза (Space)", "ctl.next": "Следующий эдит (N)",
+    "ctl.seek": "Перемотка (← →)", "ctl.mute": "Без звука (M)", "ctl.vol": "Громкость (↑ ↓)", "ctl.full": "Полный экран (F)",
+    "iv.watch": "Смотреть этот эдит", "iv.prev": "Предыдущий (←)", "iv.next": "Следующий (→)",
+    "iv.out": "Уменьшить (−)", "iv.in": "Увеличить (+)", "iv.fit": "Вписать (0)",
+    "iv.hint": "Масштаб: щипок, колесо мыши или двойной клик. Перетащи, чтобы двигать",
+    "playSound": "Смотреть со звуком", "play": "Смотреть", "colorGrade": "Цветокоррекция", "guest": "Гость", "g.other": "Другое",
+    "aria.play": "Смотреть {x}", "aria.playBy": "Смотреть {x}, Blue Corner", "aria.playPod": "Смотреть {x}, Kulturni Lešinari",
+    "aria.still": "Открыть кадр из {x}", "alt.still": "Кадр из {x}", "alt.graded": "Кадр после цветокоррекции из {x}", "alt.cover": "Обложка {x}",
+    "sub.o_SIqWudN6E": "Превью v003, не закончено", "sub.w7-jNLiDebs": "Трейлер", "sub.Kv1Nv6kRPt0": "Работа для клиента",
+    "sub.2rCEqv0GifY": "Качество низкое, амбиции высокие", "sub.Vmn5HYMoLKA": "Трейлер мода",
+    "link.Vmn5HYMoLKA": "Сделано для мода Camera Inertia", "link.TM4Jk-u-_ao": "Бит: drugela a.k.a. GejmerSaKlise",
+    "gsub.Y5YjZ35nXcs": "Кавер из «Аладдина»",
+  },
+};
+/* the English labels of the edits come straight from the data above */
+V.forEach(v => { if (v.sub) I18N.en["sub." + v.id] = v.sub; if (v.link) I18N.en["link." + v.id] = v.link.text; });
+const LANGS = { en: "en", rs: "sr-Latn", ru: "ru" };
+function pickLang() {
+  const q = new URLSearchParams(location.search).get("lang");
+  if (q && I18N[q]) return q;
+  try { const s = localStorage.getItem("lang"); if (s && I18N[s]) return s; } catch {}
+  for (const l of navigator.languages || [navigator.language || ""]) {
+    if (/^sr\b/i.test(l)) return "rs";
+    if (/^ru\b/i.test(l)) return "ru";
+    if (/^en\b/i.test(l)) return "en";
+  }
+  return "en";
+}
+let lang = pickLang();
+const t = k => I18N[lang][k] ?? I18N.en[k] ?? k;
+const fmt = (k, x) => t(k).replace("{x}", x);
+/* markup for a translatable piece, and for attributes that carry a title */
+const T = k => `<span data-i18n="${k}">${t(k)}</span>`;
+const A = (attr, k, x) => `${attr}="${fmt(k, x)}" data-i18n-${attr === "alt" ? "alt" : "aria"}="${k}" data-x="${x}"`;
+const game = g => g === "Other" ? T("g.other") : g;
+const gameText = g => g === "Other" ? t("g.other") : g;
+
 const PLAY = `<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0 10 6 0 12z" fill="currentColor"/></svg>`;
 
 const ARROW = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg>`;
 /* an optional credit or source link: the beat used, the mod a trailer was made for */
-const extLink = v => v.link ? `<a class="small beat" href="${v.link.url}" target="_blank" rel="noopener">${v.link.text}${ARROW}</a>` : "";
+const extLink = v => v.link ? `<a class="small beat" href="${v.link.url}" target="_blank" rel="noopener">${T("link." + v.id)}${ARROW}</a>` : "";
 
 /* film strip: one still from every edit, in its own shape */
-$("#strip").innerHTML = V.map(v => `<button class="frame" data-still="${v.id}" aria-label="View still from ${v.t}"><img src="media/${v.id}.jpg" alt="Still from ${v.t}" loading="lazy" draggable="false"></button>`).join("");
+$("#strip").innerHTML = V.map(v => `<button class="frame" data-still="${v.id}" ${A("aria-label", "aria.still", v.t)}><img src="media/${v.id}.jpg" ${A("alt", "alt.still", v.t)} loading="lazy" draggable="false"></button>`).join("");
 
 /* selected work */
 $("#grid").innerHTML = FEATURED.map(id => {
   const v = byId[id];
-  return `<div class="item"><button class="card" data-id="${id}" aria-label="Play ${v.t}">
+  return `<div class="item"><button class="card" data-id="${id}" ${A("aria-label", "aria.play", v.t)}>
     <div class="media reveal">
       <video data-src="media/${id}-loop.mp4" poster="media/${id}.jpg" muted loop playsinline preload="none"></video>
-      <span class="play">${PLAY} Play with sound</span>
+      <span class="play">${PLAY} ${T("playSound")}</span>
     </div>
-    <div class="meta"><h3>${v.t}</h3><span class="small">${v.g} · ${yr(v)} · ${dur(v.s)}</span></div>
+    <div class="meta"><h3>${v.t}</h3><span class="small">${game(v.g)} · ${yr(v)} · ${dur(v.s)}</span></div>
   </button>${extLink(v)}</div>`;
 }).join("");
 
@@ -573,8 +742,8 @@ const years = [...new Set(V.map(yr))];
 $("#years").innerHTML = years.map(y => `<div class="year"><span>${y}</span><div class="rows">${
   V.filter(v => yr(v) === y).map(v => `<a href="#" data-id="${v.id}">
     <img class="thumb" src="media/${v.id}.jpg" alt="" loading="lazy">
-    <span><span class="t">${v.t}</span>${v.sub || v.link ? `<span class="small sub">${v.sub || v.link.text}</span>` : ""}</span>
-    <span class="small game">${v.g}</span>
+    <span><span class="t">${v.t}</span>${v.sub || v.link ? `<span class="small sub">${T((v.sub ? "sub." : "link.") + v.id)}</span>` : ""}</span>
+    <span class="small game">${game(v.g)}</span>
     <span class="small dur">${dur(v.s)}</span>
   </a>`).join("")}</div></div>`).join("");
 
@@ -720,15 +889,20 @@ document.querySelectorAll(".rows a").forEach(a => {
 /* lightbox */
 const lb = $("#lb"), lbVid = $("#lbVid");
 let lastFocus, current = null;
+function lbMeta(id) {
+  const v = byId[id];
+  $("#lbMeta").textContent = `${gameText(v.g)} · ${v.d.replaceAll("-", ".")} · ${dur(v.s)}${v.sub ? " · " + t("sub." + id) : ""}`;
+  if (v.link) $("#lbBeat").innerHTML = t("link." + id) + ARROW;
+}
 function load(id) {
   const v = byId[id];
   current = id;
   $("#lbTitle").textContent = v.t;
-  $("#lbMeta").textContent = `${v.g} · ${v.d.replaceAll("-", ".")} · ${dur(v.s)}${v.sub ? " · " + v.sub : ""}`;
+  lbMeta(id);
   $("#lbYt").href = `https://www.youtube.com/watch?v=${id}`;
   const lbBeat = $("#lbBeat");
   lbBeat.hidden = !v.link;
-  if (v.link) { lbBeat.href = v.link.url; lbBeat.innerHTML = v.link.text + ARROW; }
+  if (v.link) lbBeat.href = v.link.url;
   lbVid.poster = `media/${id}.jpg`;
   lbVid.src = `media/${id}.mp4`;
   lbVid.play().catch(() => {});
@@ -792,9 +966,9 @@ function fullscreen() {
   if (lb.requestFullscreen) lb.requestFullscreen().catch(() => {});
   else if (lbVid.webkitEnterFullscreen) lbVid.webkitEnterFullscreen(); /* iPhone */
 }
-const t = s => dur(Math.floor(s || 0));
+const clockOf = s => dur(Math.floor(s || 0));
 function syncTime() {
-  cTime.textContent = `${t(lbVid.currentTime)} / ${t(lbVid.duration)}`;
+  cTime.textContent = `${clockOf(lbVid.currentTime)} / ${clockOf(lbVid.duration)}`;
   if (!seeking && lbVid.duration) cSeek.value = Math.round(lbVid.currentTime / lbVid.duration * 1000);
 }
 lbVid.addEventListener("timeupdate", syncTime);
@@ -857,13 +1031,17 @@ function zoomAt(ns, px, py) {
   applyZoom();
 }
 const centre = () => [ivStage.clientWidth / 2, ivStage.clientHeight / 2];
+function ivText(id) {
+  const v = byId[id];
+  $("#ivMeta").textContent = `${gameText(v.g)} · ${yr(v)}`;
+  ivImg.alt = fmt("alt.still", v.t);
+}
 function showStill(id) {
   const v = byId[id], i = V.findIndex(x => x.id === id);
   ivId = id;
   $("#ivTitle").textContent = v.t;
-  $("#ivMeta").textContent = `${v.g} · ${yr(v)}`;
+  ivText(id);
   $("#ivCount").textContent = `${i + 1} / ${V.length}`;
-  ivImg.alt = `Still from ${v.t}`;
   ivImg.src = `media/stills/${id}.jpg`;
   z = { s: 1, x: 0, y: 0 }; applyZoom();
 }
@@ -954,12 +1132,12 @@ const GRADES = [
   { id: "dTqkToJqS44", t: "Night Like This", d: "2023-03-16", s: 228 },
   { id: "NwDdrOXPn1w", t: "Nah Neh Nah", d: "2022-03-20", s: 177 },
 ];
-$("#ggrid").innerHTML = GRADES.map(v => `<button class="gcard" data-yt="${v.id}" aria-label="Play ${v.t} by Blue Corner">
+$("#ggrid").innerHTML = GRADES.map(v => `<button class="gcard" data-yt="${v.id}" ${A("aria-label", "aria.playBy", v.t)}>
   <div class="media reveal">
-    <img src="media/grading/${v.id}.jpg" alt="Graded frame from ${v.t}" loading="lazy">
+    <img src="media/grading/${v.id}.jpg" ${A("alt", "alt.graded", v.t)} loading="lazy">
     <span class="play">${PLAY} Play</span>
   </div>
-  <div class="meta"><h3>${v.t}</h3><span class="small">${["Blue Corner", v.sub, yr(v), dur(v.s)].filter(Boolean).join(" · ")}</span><span class="small">Color grade</span></div>
+  <div class="meta"><h3>${v.t}</h3><span class="small">${["Blue Corner", v.sub && T("gsub." + v.id), yr(v), dur(v.s)].filter(Boolean).join(" · ")}</span><span class="small">${T("colorGrade")}</span></div>
 </button>`).join("");
 document.querySelectorAll("#ggrid .reveal").forEach(el => io.observe(el));
 
@@ -970,30 +1148,35 @@ const PODS = [
   { id: "KqMjZ58RCvU", t: "Privlačnost ekstremnog: Horor, „snuff“ i priroda zla", ep: "S02E08", d: "2026-02-12", s: 4138 },
 ];
 const hms = s => s >= 3600 ? `${Math.floor(s / 3600)}:${String(Math.floor(s % 3600 / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}` : dur(s);
-$("#plist").innerHTML = PODS.map(v => `<button class="prow" data-yt="${v.id}" aria-label="Play ${v.t}, Kulturni Lešinari ${v.ep}">
+$("#plist").innerHTML = PODS.map(v => `<button class="prow" data-yt="${v.id}" ${A("aria-label", "aria.playPod", v.t)}>
   <div class="media reveal">
-    <img src="media/podcasts/${v.id}.jpg" alt="Cover of ${v.t}" loading="lazy">
+    <img src="media/podcasts/${v.id}.jpg" ${A("alt", "alt.cover", v.t)} loading="lazy">
     <span class="play">${PLAY} Play</span>
   </div>
   <div class="meta">
     <span class="small">Kulturni Lešinari · ${v.ep}</span>
     <h3>${v.t}</h3>
-    <span class="small">${[v.guest && "Guest: " + v.guest, v.d.replaceAll("-", "."), hms(v.s)].filter(Boolean).join(" · ")}</span>
+    <span class="small">${[v.guest && T("guest") + ": " + v.guest, v.d.replaceAll("-", "."), hms(v.s)].filter(Boolean).join(" · ")}</span>
   </div>
 </button>`).join("");
 document.querySelectorAll("#plist .reveal").forEach(el => io.observe(el));
 
 /* one YouTube player for both the grading videos and the podcasts */
 const gb = $("#gb"), gbFrame = $("#gbFrame");
-let gbLast = null;
+let gbLast = null, gbId = null;
+function gbMetaFor(id) {
+  const g = GRADES.find(x => x.id === id), v = g || PODS.find(x => x.id === id);
+  $("#gbMeta").textContent = g
+    ? ["Blue Corner", v.sub && t("gsub." + id), t("colorGrade").toLowerCase()].filter(Boolean).join(" · ")
+    : ["Kulturni Lešinari", v.ep, v.guest, hms(v.s)].filter(Boolean).join(" · ");
+}
 function openGb(id) {
   const g = GRADES.find(x => x.id === id), p = PODS.find(x => x.id === id), v = g || p;
   gbLast = document.activeElement;
   quietPage();
   $("#gbTitle").textContent = v.t;
-  $("#gbMeta").textContent = g
-    ? ["Blue Corner", v.sub, "color grade"].filter(Boolean).join(" · ")
-    : ["Kulturni Lešinari", v.ep, v.guest, hms(v.s)].filter(Boolean).join(" · ");
+  gbId = id;
+  gbMetaFor(id);
   $("#gbYt").href = `https://www.youtube.com/watch?v=${id}`;
   gbFrame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1&enablejsapi=1`;
   gb.classList.add("open");
@@ -1027,9 +1210,33 @@ document.addEventListener("click", e => { if (!dd.contains(e.target)) setDd(fals
 dd.addEventListener("focusout", e => { if (!dd.contains(e.relatedTarget)) setDd(false); });
 addEventListener("keydown", e => { if (e.key === "Escape" && dd.classList.contains("open")) { setDd(false); ddBtn.focus(); } });
 
+/* language switch: EN / RS / RU */
+function applyLang(l) {
+  lang = l;
+  try { localStorage.setItem("lang", l); } catch {}
+  document.documentElement.lang = LANGS[l];
+  document.title = t("meta.title");
+  document.querySelector('meta[name="description"]').content = t("meta.desc");
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-html]").forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+  document.querySelectorAll("[data-i18n-aria]").forEach(el => { el.setAttribute("aria-label", el.dataset.x ? fmt(el.dataset.i18nAria, el.dataset.x) : t(el.dataset.i18nAria)); });
+  document.querySelectorAll("[data-i18n-title]").forEach(el => { el.title = t(el.dataset.i18nTitle); });
+  document.querySelectorAll("[data-i18n-alt]").forEach(el => { el.alt = fmt(el.dataset.i18nAlt, el.dataset.x); });
+  document.querySelectorAll(".lang [data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === l));
+  /* text set by the players while they are open */
+  if (current) lbMeta(current);
+  if (gb.classList.contains("open")) gbMetaFor(gbId);
+  if (iv.classList.contains("open")) ivText(ivId);
+  tickClock();
+}
+document.querySelectorAll(".lang [data-lang]").forEach(b => b.addEventListener("click", () => applyLang(b.dataset.lang)));
+
 /* local clock in the footer */
 const clock = $("#clock");
-(function c() { clock.textContent = "Your time " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); setTimeout(c, 15000); })();
+function tickClock() { clock.textContent = t("clock") + " " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); }
+setInterval(tickClock, 15000);
+
+applyLang(lang);
 </script>
 </body>
 </html>
