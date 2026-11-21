@@ -259,12 +259,12 @@
 
   /* podcasts: long-form edits, one row per episode with the cover beside its details */
   .pods { padding: var(--gap) var(--gutter) 0; }
-  .plist { display: grid; gap: 56px; }
-  .prow { display: grid; grid-template-columns: 5fr 7fr; gap: var(--gutter); align-items: center; text-align: left; width: 100%; transition: transform 160ms var(--ease-out); }
+  .plist { display: grid; gap: 40px; }
+  .prow { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: var(--gutter); align-items: center; text-align: left; width: 100%; transition: transform 160ms var(--ease-out); }
   .prow:active { transform: scale(.995); }
   .prow .media { position: relative; aspect-ratio: 16/9; overflow: hidden; background: var(--tone); }
   .prow img { position: absolute; inset: 0; transition: transform 900ms var(--ease-out); }
-  .prow h3 { font-weight: 800; letter-spacing: -.035em; font-size: clamp(26px, 3.2vw, 48px); line-height: 1.02; margin: 10px 0 12px; max-width: 18em; }
+  .prow h3 { font-weight: 800; letter-spacing: -.035em; font-size: clamp(20px, 2.4vw, 36px); line-height: 1.05; margin: 8px 0 10px; max-width: 22em; }
   .pods .after { margin-top: 48px; }
   @media (hover: hover) and (pointer: fine) {
     .prow:hover img { transform: scale(1.04); }
@@ -365,8 +365,10 @@
     .grid { grid-template-columns: 1fr; row-gap: 64px; }
     .grid .item { grid-column: 1 / -1 !important; }
     .ggrid { grid-template-columns: 1fr; row-gap: 48px; }
-    .prow { grid-template-columns: 1fr; gap: 14px; }
-    .plist { gap: 48px; }
+    .prow { grid-template-columns: 128px minmax(0, 1fr); gap: 14px; align-items: start; }
+    .prow .play { display: none; }
+    .prow h3 { margin: 4px 0 6px; }
+    .plist { gap: 28px; }
     .year { grid-template-columns: 1fr; margin-top: 24px; }
     .year > span { padding: 12px 0 4px; }
     .rows a { grid-template-columns: minmax(72px, 104px) minmax(0, 1fr) auto; gap: 14px; }
