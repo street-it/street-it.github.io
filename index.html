@@ -256,7 +256,14 @@
   .grade .after { margin-top: 48px; }
   .gb { grid-template-rows: auto minmax(0, 1fr); }
   .gb .vid iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
-  .gb header .actions { display: flex; gap: 8px; align-items: center; }
+  .lb header .actions { display: flex; gap: 16px; align-items: center; flex: none; }
+  .lb header .actions .beat { margin-top: 0; }
+  @media (max-width: 600px) {
+    /* phones: the link and Close get their own row on top, the title gets the full width */
+    .lb header { flex-wrap: wrap; row-gap: 10px; }
+    .lb header .actions { order: -1; width: 100%; justify-content: space-between; }
+    .lb header > div:not(.actions) { flex: 1 1 100%; }
+  }
 
   /* contact */
   .contact { padding: var(--gap) var(--gutter) 32px; }
@@ -428,7 +435,7 @@
 <div class="peek" id="peek"><video muted loop playsinline poster="media/reel.jpg"></video></div>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-labelledby="lbTitle">
-  <header><div><span class="small" id="lbMeta"></span><strong id="lbTitle"></strong><a class="small beat" id="lbBeat" target="_blank" rel="noopener" hidden></a></div><button class="close" id="lbClose">Close</button></header>
+  <header><div><span class="small" id="lbMeta"></span><strong id="lbTitle"></strong><a class="small beat" id="lbBeat" target="_blank" rel="noopener" hidden></a></div><div class="actions"><a class="small beat" id="lbYt" target="_blank" rel="noopener">Watch on YouTube<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a><button class="close" id="lbClose">Close</button></div></header>
   <div class="vid"><video id="lbVid" playsinline poster="media/reel.jpg"></video></div>
   <div class="ctrl" id="ctrl">
     <button id="cPrev" aria-label="Previous edit" title="Previous edit (P)"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
@@ -670,6 +677,7 @@ function load(id) {
   current = id;
   $("#lbTitle").textContent = v.t;
   $("#lbMeta").textContent = `${v.g} · ${v.d.replaceAll("-", ".")} · ${dur(v.s)}${v.sub ? " · " + v.sub : ""}`;
+  $("#lbYt").href = `https://www.youtube.com/watch?v=${id}`;
   const lbBeat = $("#lbBeat");
   lbBeat.hidden = !v.link;
   if (v.link) { lbBeat.href = v.link.url; lbBeat.innerHTML = v.link.text + ARROW; }
