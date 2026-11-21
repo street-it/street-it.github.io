@@ -893,15 +893,15 @@ addEventListener("keydown", e => {
 /* color grading: Blue Corner's music videos, played from their YouTube channel */
 const GRADES = [
   { id: "Y5YjZ35nXcs", t: "Friend Like Me", sub: "Aladdin cover", d: "2025-04-22", s: 192 },
-  { id: "dTqkToJqS44", t: "Night Like This", sub: "Gypsy jazz cover", d: "2023-03-16", s: 228 },
-  { id: "NwDdrOXPn1w", t: "Nah Neh Nah", sub: "Gypsy jazz cover", d: "2022-03-20", s: 177 },
+  { id: "dTqkToJqS44", t: "Night Like This", d: "2023-03-16", s: 228 },
+  { id: "NwDdrOXPn1w", t: "Nah Neh Nah", d: "2022-03-20", s: 177 },
 ];
 $("#ggrid").innerHTML = GRADES.map(v => `<button class="gcard" data-yt="${v.id}" aria-label="Play ${v.t} by Blue Corner">
   <div class="media reveal">
     <img src="media/grading/${v.id}.jpg" alt="Graded frame from ${v.t}" loading="lazy">
     <span class="play">${PLAY} Play</span>
   </div>
-  <div class="meta"><h3>${v.t}</h3><span class="small">Blue Corner · ${v.sub} · ${yr(v)} · ${dur(v.s)}</span><span class="small">Color grade</span></div>
+  <div class="meta"><h3>${v.t}</h3><span class="small">${["Blue Corner", v.sub, yr(v), dur(v.s)].filter(Boolean).join(" · ")}</span><span class="small">Color grade</span></div>
 </button>`).join("");
 document.querySelectorAll("#ggrid .reveal").forEach(el => io.observe(el));
 const gb = $("#gb"), gbFrame = $("#gbFrame");
@@ -911,7 +911,7 @@ function openGb(id) {
   gbLast = document.activeElement;
   quietPage();
   $("#gbTitle").textContent = v.t;
-  $("#gbMeta").textContent = `Blue Corner · ${v.sub} · color grade`;
+  $("#gbMeta").textContent = ["Blue Corner", v.sub, "color grade"].filter(Boolean).join(" · ");
   $("#gbYt").href = `https://www.youtube.com/watch?v=${id}`;
   gbFrame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
   gb.classList.add("open");
