@@ -1145,7 +1145,7 @@ document.querySelectorAll("#ggrid .reveal").forEach(el => io.observe(el));
 const PODS = [
   { id: "v5nHwiMNnxc", t: "Priče iz mećave i tmine", guest: "Boris Mišić", ep: "S02 Specijal 2/2", d: "2026-04-02", s: 3354 },
   { id: "eKovwjJW3Gw", t: "Dolazi nam vrag u posetu", guest: "Dušan Stojmenović", ep: "S02 Specijal 1/2", d: "2026-03-19", s: 2616 },
-  { id: "KqMjZ58RCvU", t: "Privlačnost ekstremnog: Horor, „snuff“ i priroda zla", ep: "S02E08", d: "2026-02-12", s: 4138 },
+  { id: "KqMjZ58RCvU", t: "Privlačnost ekstremnog: Horor, „snuff“ i priroda zla", guest: "Branislav Čeman", ep: "S02E08", d: "2026-02-12", s: 4138 },
 ];
 const hms = s => s >= 3600 ? `${Math.floor(s / 3600)}:${String(Math.floor(s % 3600 / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}` : dur(s);
 $("#plist").innerHTML = PODS.map(v => `<button class="prow" data-yt="${v.id}" ${A("aria-label", "aria.playPod", v.t)}>
