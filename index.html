@@ -349,16 +349,24 @@
     .ggrid { grid-template-columns: 1fr; row-gap: 48px; }
     .prow { grid-template-columns: 1fr; gap: 14px; }
     .plist { gap: 48px; }
-  }
-  @media (max-width: 480px) {
-    /* four menu links don't fit next to the logo on small phones; the timeline follows Work anyway */
-    .bar nav .hide-s { display: none; }
     .year { grid-template-columns: 1fr; margin-top: 24px; }
     .year > span { padding: 12px 0 4px; }
-    .rows a { grid-template-columns: 104px 1fr auto; gap: 14px; }
+    .rows a { grid-template-columns: minmax(72px, 104px) minmax(0, 1fr) auto; gap: 14px; }
+    .rows .t { overflow-wrap: anywhere; }
     .rows .game { display: none; }
     .hud { flex-wrap: wrap; bottom: 24px; }
     .hud .hint { display: none; }
+  }
+  @media (max-width: 480px) {
+    /* small phones: the Timeline link drops (the timeline follows Work anyway) and the
+       remaining four links sit closer together so they fit beside the logo */
+    .bar nav .hide-s { display: none; }
+    .bar nav { gap: 2px; margin-right: -6px; }
+    .bar nav a { padding: 12px 6px; }
+  }
+  @media (max-width: 370px) {
+    /* the narrowest phones: Work drops too, it is the first section after the intro */
+    .bar nav .hide-xs { display: none; }
   }
   @media (hover: none) { .peek { display: none; } }
   @media (prefers-reduced-motion: reduce) {
@@ -371,8 +379,9 @@
 <header class="bar" id="bar">
   <a href="#top" class="logo">sTreeT</a>
   <nav>
-    <a href="#work">Work</a>
+    <a href="#work" class="hide-xs">Work</a>
     <a href="#index" class="hide-s">Timeline</a>
+    <a href="#podcasts">Podcasts</a>
     <a href="#grading">Grading</a>
     <a href="#contact">Contact</a>
   </nav>
